@@ -13,14 +13,14 @@ function Layout({ children }: LayoutProps) {
           <Link to="/home">Home</Link>
           <Link to="/dashboard">Dashboard</Link>
           <Link to="/sobre">Sobre</Link>
-          <Link to="/login">Login</Link>
+          <Link to="/login">LogOut</Link>
         </nav>
       </header>
       <main className="container">
         {children}
       </main>
       <footer>
-        <p>&copy; 2023 Gerenciador de Orçamento Pessoal</p>
+        <p>&copy; 2023 MyFinance</p>
       </footer>
     </div>
   );
