@@ -1,24 +1,28 @@
 import { useState } from 'react';
-import { db, auth } from '../firebaseConfig.js';
+import { db, auth } from '../firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
 
 function ExpenseForm() {
-  const [descricao, setDescricao] = useState('');
-  const [valor, setValor] = useState('');
+  const [descricao, setDescricao] = useState<string>('');
+  const [valor, setValor] = useState<string>('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (parseFloat(valor) <= 0 || !descricao) return;
 
     try {
-      await addDoc(collection(db, 'transacoes'), {
-        uid: auth.currentUser.uid,
-        descricao,
-        valor: parseFloat(valor),
-        tipo: 'despesa',
-      });
-      setDescricao('');
-      setValor('');
+      if (auth.currentUser) {
+        await addDoc(collection(db, 'transacoes'), {
+          uid: auth.currentUser.uid,
+          descricao,
+          valor: parseFloat(valor),
+          tipo: 'despesa',
+        });
+        setDescricao('');
+        setValor('');
+      } else {
+        console.error('Usuário não autenticado');
+      }
     } catch (error) {
       console.error(error);
     }
@@ -30,14 +34,14 @@ function ExpenseForm() {
       <input
         type="text"
         value={descricao}
-        onChange={(e) => setDescricao(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescricao(e.target.value)}
         placeholder="Descrição"
         required
       />
       <input
         type="number"
         value={valor}
-        onChange={(e) => setValor(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValor(e.target.value)}
         placeholder="Valor"
         required
       />

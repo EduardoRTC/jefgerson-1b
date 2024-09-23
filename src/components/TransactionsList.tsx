@@ -2,12 +2,23 @@ import { db } from '../firebaseConfig';
 import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { useState } from 'react';
 
-function TransactionsList({ transacoes }) {
-  const [isEditing, setIsEditing] = useState(null);
-  const [descricao, setDescricao] = useState('');
-  const [valor, setValor] = useState('');
+interface Transacao {
+  id: string;
+  descricao: string;
+  valor: number;
+  tipo: 'receita' | 'despesa';
+}
 
-  const handleDelete = async (id) => {
+interface TransactionsListProps {
+  transacoes: Transacao[];
+}
+
+function TransactionsList({ transacoes }: TransactionsListProps) {
+  const [isEditing, setIsEditing] = useState<string | null>(null);
+  const [descricao, setDescricao] = useState<string>('');
+  const [valor, setValor] = useState<string>('');
+
+  const handleDelete = async (id: string) => {
     try {
       await deleteDoc(doc(db, 'transacoes', id));
     } catch (error) {
@@ -15,13 +26,13 @@ function TransactionsList({ transacoes }) {
     }
   };
 
-  const handleEdit = (transacao) => {
+  const handleEdit = (transacao: Transacao) => {
     setIsEditing(transacao.id);
     setDescricao(transacao.descricao);
-    setValor(transacao.valor);
+    setValor(transacao.valor.toString());
   };
 
-  const handleUpdate = async (id) => {
+  const handleUpdate = async (id: string) => {
     try {
       await updateDoc(doc(db, 'transacoes', id), {
         descricao,
@@ -37,19 +48,19 @@ function TransactionsList({ transacoes }) {
     <div>
       <h2>Transações</h2>
       <ul>
-        {transacoes.map((t) => (
+        {transacoes.map((t: Transacao) => (
           <li key={t.id}>
             {isEditing === t.id ? (
               <>
                 <input
                   type="text"
                   value={descricao}
-                  onChange={(e) => setDescricao(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescricao(e.target.value)}
                 />
                 <input
                   type="number"
                   value={valor}
-                  onChange={(e) => setValor(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValor(e.target.value)}
                 />
                 <button onClick={() => handleUpdate(t.id)}>Salvar</button>
                 <button onClick={() => setIsEditing(null)}>Cancelar</button>

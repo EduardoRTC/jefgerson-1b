@@ -1,6 +1,11 @@
+import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-function Layout({ children }) {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+function Layout({ children }: LayoutProps) {
   return (
     <div className="layout">
       <header>

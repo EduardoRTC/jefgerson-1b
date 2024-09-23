@@ -9,14 +9,19 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/dashboard" element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        } />
-        <Route path="/sobre" element={<Sobre />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/home" element={<Home />} />
+        <Route path="/sobre" element={<Sobre />} />
+        <Route path="*" element={<Login />} />
       </Routes>
     </Router>
   );

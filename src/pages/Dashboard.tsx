@@ -7,8 +7,19 @@ import ExpenseForm from '../components/ExpenseForm';
 import TransactionsList from '../components/TransactionsList';
 import Layout from '../components/Layout';
 
+interface TransacaoData {
+  descricao: string;
+  valor: number;
+  tipo: 'receita' | 'despesa';
+  uid: string;
+}
+
+interface Transacao extends TransacaoData {
+  id: string;
+}
+
 function Dashboard() {
-  const [transacoes, setTransacoes] = useState([]);
+  const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [user] = useAuthState(auth);
 
   useEffect(() => {
@@ -18,7 +29,10 @@ function Dashboard() {
         where('uid', '==', user.uid)
       );
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const trans = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const trans = snapshot.docs.map((doc) => {
+          const data = doc.data() as TransacaoData;
+          return { id: doc.id, ...data };
+        });
         setTransacoes(trans);
       });
       return () => unsubscribe();
@@ -41,15 +55,30 @@ function Dashboard() {
       <div className="summary">
         <div>
           <h3>Total de Receitas</h3>
-          <p>{totalReceitas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+          <p>
+            {totalReceitas.toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            })}
+          </p>
         </div>
         <div>
           <h3>Total de Despesas</h3>
-          <p>{totalDespesas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+          <p>
+            {totalDespesas.toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            })}
+          </p>
         </div>
         <div>
           <h3>Saldo</h3>
-          <p>{saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+          <p>
+            {saldo.toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            })}
+          </p>
         </div>
       </div>
 
